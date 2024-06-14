@@ -1,6 +1,5 @@
 @extends('Layouts.main')
 
-
 @section('content')
     <h2 class="section-title">Data sepatu </h2>
     <div class="row">

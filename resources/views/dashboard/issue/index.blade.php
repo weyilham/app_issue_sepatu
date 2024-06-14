@@ -1,12 +1,65 @@
 @extends('Layouts.main')
 
+@push('styles')
+    <style>
+        .d_gambar:hover {
+            cursor: pointer;
+            transform: scale(1.1);
+            transition: 0.5s;
+            filter: grayscale(70%);
+        }
+
+        .gambar-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80vw;
+            height: 80vh;
+            background-color: rgba(0, 0, 0);
+            z-index: 9999;
+            border: 1px solid rgb(33, 83, 200);
+            border-radius: 14px;
+            display: none;
+
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            font-weight: 500;
+            color: rgb(215, 0, 0);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            transition: 0.5s;
+            scale: 1.1;
+            color: rgb(255, 42, 42)
+        }
+
+        .d_gambar_priview {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    </style>
+@endpush
+
 @section('content')
+    <div class="gambar-preview">
+        <div class="close-button">X</div>
+        <img src="" alt="gambar-priview" class="d_gambar_priview">
+    </div>
+
     <h2 class="section-title">Data Issue </h2>
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4><i class="fas fa-users"></i> Daftar Sepatu</h4>
+                    <h4><i class="fas fa-users"></i> Daftar Issue</h4>
                 </div>
                 <div class="card-body">
                     <a href="/issue/create" class="btn btn-primary mb-3">Tambah Data</a>
@@ -29,6 +82,11 @@
             </div>
         </div>
     </div>
+
+
+
+
+
 
     <!-- Modal Detail -->
     <div class="modal fade" id="formDetail" tabindex="-1" aria-labelledby="formDetailLabel" aria-hidden="true">
@@ -83,11 +141,10 @@
 
                                 <tr>
                                 <tr>
-                                    <td>
+                                    <td class="">
                                         <img src="https://via.placeholder.com/150"
                                             class="img-thumbnail object-fit-cover d_gambar" width="150" height="150"
                                             alt="Gambar">
-
                                     </td>
 
                                 </tr>
@@ -168,6 +225,19 @@
                 })
             }
 
+
+            $('.d_gambar').on('click', function() {
+                $('.gambar-preview').fadeIn();
+                const gambar = $(this).attr('src');
+
+                $('.gambar-preview .d_gambar_priview').attr('src', gambar);
+
+                $('.close-button').on('click', function() {
+                    $('.gambar-preview').fadeOut();
+                })
+
+            })
+
             // modalDetail
             $(document).on('click', '.detailTombol', function() {
                 $('.modal-backdrop').hide();
@@ -196,7 +266,8 @@
                         $('.d_deskripsi').text(response.data.deskripsi)
                         $('.d_tgl_issue').text(response.data.tgl_issue)
                         $('.d_status').text(response.data.status)
-                        $('.d_gambar').attr('src', "{{ url('storage') }}" + '/' + response.data
+                        $('.d_gambar').attr('src', "{{ url('storage') }}" + '/' +
+                            response.data
                             .gambar)
                         // $('#formEdit').modal('show')
                     }
@@ -208,25 +279,70 @@
             $(document).on('click', '.editData', function() {
                 $('.modal-backdrop').hide();
 
-                const id = $(this).data('id')
+                const id = $(this).data('id');
 
                 $.ajax({
-                    type: "get",
+                    type: "GET",
                     url: "{{ url('issue') }}/" + id,
                     success: function(response) {
-                        console.log(response.data.deskripsi)
-                        $('#sepatu_id').val(response.data.sepatu_id)
-                        $('.gambar-issue').attr('src', "{{ url('storage') }}" + '/' + response
-                            .data.gambar)
+                        $('#sepatu_id').val(response.data.sepatu_id);
+                        $('.gambar-issue').attr('src', "{{ url('storage') }}" +
+                            '/' + response
+                            .data.gambar);
+                        $('#deskripsi').val(response.data.deskripsi);
 
-                        $('#deskripsi').val(response.data.deskripsi)
+                        // Menghapus event handler sebelumnya agar tidak menambahkan banyak event handler setiap kali modal dibuka
+                        $('.updateData').off('click').on('click', function() {
+                            let formData = new FormData();
+                            formData.append('sepatu_id', $('#sepatu_id')
+                                .val());
+                            formData.append('deskripsi', $('#deskripsi')
+                                .val());
 
+                            if ($('#gambar')[0].files.length > 0) {
+                                formData.append('gambar', $('#gambar')[0]
+                                    .files[0]);
+                            }
 
+                            formData.append('_method',
+                                'PUT'); // Metode spoofing untuk Laravel
+                            formData.append('id', id);
+
+                            $.ajax({
+                                type: "POST", // Metode POST dengan spoofing _method
+                                url: "{{ url('issue') }}/" + id,
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function(response) {
+                                    $('#formEdit').modal(
+                                        'hide');
+
+                                    Swal.fire({
+                                        title: "Updated!",
+                                        text: response
+                                            .success,
+                                        icon: "success"
+                                    });
+                                    $('#myTable').DataTable()
+                                        .ajax.reload();
+
+                                },
+                                error: function(response) {
+                                    console.error(response);
+                                    alert(
+                                        'Terjadi kesalahan. Silakan coba lagi.'
+                                    );
+                                }
+                            });
+                        });
+                    },
+                    error: function(response) {
+                        console.error(response);
+                        alert('Terjadi kesalahan. Data tidak dapat diambil.');
                     }
-                })
-
-
-            })
+                });
+            });
 
             //delete data
             $(document).on('click', '.hapusData', function() {
@@ -268,7 +384,6 @@
             })
 
 
-
             // Data Table
             $('#myTable').DataTable({
                 processing: true,
@@ -306,7 +421,6 @@
 
             });
 
-            // Edit Data
         });
     </script>
 @endpush

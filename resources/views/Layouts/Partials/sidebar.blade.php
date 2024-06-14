@@ -27,7 +27,7 @@
                     </span></a>
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="/issue">Pengajuan Issue</a></li>
-                    <li><a class="nav-link" href="/improvement">Improvement</a></li>
+                    <li><a class="nav-link" href="/improve">Improve</a></li>
                 </ul>
             </li>
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImprovedController;
 use App\Http\Controllers\IssueAjaxController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\SepatuController;
@@ -32,3 +33,6 @@ Route::get('/getTableSepatu', function () {
 
 Route::resource('/issue', IssueController::class);
 Route::resource('/ajaxIssue', IssueAjaxController::class);
+
+Route::get('/improve', [ImprovedController::class, 'index']);
+Route::get('/getDataIssue', [ImprovedController::class, 'getDataIssue']);
