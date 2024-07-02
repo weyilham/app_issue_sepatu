@@ -11,11 +11,11 @@
                 <div class="card-body">
                     <div class="group-button">
                         <button type="button" class="btn btn-danger">Jumlah Sepatu Cacat <span
-                                class="badge badge-transparent">4</span></button>
+                                class="badge badge-transparent">{{ $issue->count() }}</span></button>
                         <button type="button" class="btn btn-warning">Jumlah Impoved <span
-                                class="badge badge-transparent">4</span></button>
-                        <button type="button" class="btn btn-success">Jumlah Sepatu Yang Sudah di Perbaiki <span
-                                class="badge badge-transparent">4</span></button>
+                                class="badge badge-transparent">{{ $improve->count() }}</span></button>
+                        <button type="button" class="btn btn-success">Jumlah Sepatu Data Sepatu <span
+                                class="badge badge-transparent">{{ $sepatu->count() }}</span></button>
 
 
                     </div>

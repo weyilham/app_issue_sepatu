@@ -196,8 +196,7 @@
                                             response) {
                                             $('#myTable').html(
                                                 response);
-                                            console.log(
-                                                'halloooo')
+
                                         }
                                     })
 

@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ImprovedController;
 use App\Http\Controllers\IssueAjaxController;
 use App\Http\Controllers\IssueController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SepatuController;
 use App\Http\Controllers\UserController;
+use App\Models\Issue;
 use App\Models\Sepatu;
 use Illuminate\Support\Facades\Route;
 
@@ -19,20 +23,47 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/dashboard', function () {
-    return view('dashboard.index');
-});
+Route::get('/', [LoginController::class, 'index'])->middleware('guest')->name('login');
+Route::post('/login', [LoginController::class, 'authenticate']);
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
-Route::resource('/users', UserController::class);
-Route::resource('/sepatu', SepatuController::class);
+
+Route::get('/dashboard', function () {
+    return view('dashboard.index', [
+        'issue' => Issue::where('status', 'Issue')->where('created_at', '>=', now()->subDays(30))->get(),
+        'improve' => Issue::where('status', 'Done')->where('created_at', '>=', now()->subDays(30))->get(),
+        'sepatu' => Sepatu::orderBy('id', 'desc')->get(),
+
+    ]);
+})->middleware('auth');
+
+Route::resource('/users', UserController::class)->middleware('is_admin');
+Route::get('/profile/{user:username}', [ProfileController::class, 'index'])->middleware('auth');
+Route::put('/profile/{id}', [ProfileController::class, 'update'])->middleware('auth');
+
+Route::get('/profile/change-password/{user:username}', [ProfileController::class, 'changePassword'])->middleware('auth');
+Route::put('/profile/change-password/{id}', [ProfileController::class, 'updatePassword'])->name('profile.change-password')->middleware('auth');
+
+
+Route::resource('/sepatu', SepatuController::class)->middleware('is_admin');
 Route::get('/getTableSepatu', function () {
     return view('dashboard.sepatu.getTable', [
         'sepatu' => Sepatu::orderBy('id', 'desc')->get(),
     ]);
+})->middleware('auth');
+
+Route::resource('/issue', IssueController::class)->middleware('is_qc');
+Route::get('/getIssue/{id}', function ($id) {
+    return response()->json(['data' => Issue::find($id), 'sepatu' => Sepatu::orderBy('id', 'desc')->get()]);
 });
-
-Route::resource('/issue', IssueController::class);
-Route::resource('/ajaxIssue', IssueAjaxController::class);
-
-Route::get('/improve', [ImprovedController::class, 'index']);
-Route::get('/getDataIssue', [ImprovedController::class, 'getDataIssue']);
+Route::resource('/ajaxIssue', IssueAjaxController::class)->middleware('is_qc');
+Route::get('/improve', [ImprovedController::class, 'index'])->middleware('is_lab');
+Route::put('/improve/{id}', [ImprovedController::class, 'update'])->middleware('is_lab');
+Route::get('/getDataIssue', [ImprovedController::class, 'getDataIssue'])->middleware('auth');
+Route::get('/getDataImprove', [ImprovedController::class, 'getDataImprove'])->middleware('auth');
+Route::get('/laporan/issue', [LaporanController::class, 'index'])->middleware('auth');
+Route::get('/laporan/improve', [LaporanController::class, 'improve'])->middleware('auth');
+Route::get('/laporan/getIssue', [LaporanController::class, 'getDataLaporan'])->middleware('auth');
+Route::get('/laporan/getImprove', [LaporanController::class, 'getDataLaporanImprove'])->middleware('auth');
+Route::get('/laporan/export_issue', [LaporanController::class, 'exportIssue'])->middleware('auth');
+Route::get('/laporan/export_improve', [LaporanController::class, 'exportImprove'])->middleware('auth');

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\issue;
-use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
+use App\Models\Improve;
+use App\Http\Requests\StoreImproveRequest;
+use App\Http\Requests\UpdateImproveRequest;
 
-class IssueAjaxController extends Controller
+class ImproveController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,13 +16,6 @@ class IssueAjaxController extends Controller
     public function index()
     {
         //
-        $data = issue::where('status', 'Issue')->get();
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function ($data) {
-                return view('dashboard.issue.tombol', compact('data'));
-            })
-            ->make(true);
     }
 
     /**
@@ -38,10 +31,10 @@ class IssueAjaxController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreImproveRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreImproveRequest $request)
     {
         //
     }
@@ -49,10 +42,10 @@ class IssueAjaxController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\issue  $issue
+     * @param  \App\Models\Improve  $improve
      * @return \Illuminate\Http\Response
      */
-    public function show(issue $issue)
+    public function show(Improve $improve)
     {
         //
     }
@@ -60,10 +53,10 @@ class IssueAjaxController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\issue  $issue
+     * @param  \App\Models\Improve  $improve
      * @return \Illuminate\Http\Response
      */
-    public function edit(issue $issue)
+    public function edit(Improve $improve)
     {
         //
     }
@@ -71,11 +64,11 @@ class IssueAjaxController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\issue  $issue
+     * @param  \App\Http\Requests\UpdateImproveRequest  $request
+     * @param  \App\Models\Improve  $improve
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, issue $issue)
+    public function update(UpdateImproveRequest $request, Improve $improve)
     {
         //
     }
@@ -83,10 +76,10 @@ class IssueAjaxController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\issue  $issue
+     * @param  \App\Models\Improve  $improve
      * @return \Illuminate\Http\Response
      */
-    public function destroy(issue $issue)
+    public function destroy(Improve $improve)
     {
         //
     }

@@ -49,22 +49,32 @@
 
                     <li class="dropdown"><a href="#" data-toggle="dropdown"
                             class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                            <img alt="image" src="/assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-                            <div class="d-sm-none d-lg-inline-block">Hi, Ujang Maman</div>
+                            <img alt="image"
+                                src="{{ Auth::user()->image == 'default.jpg' ? asset('img/default.jpg') : asset('storage/' . Auth::user()->image) }}"
+                                class="rounded-circle mr-1 avatar-img" width="30" height="30"
+                                style="object-fit: cover">
+                            <div class="d-sm-none d-lg-inline-block">Hi, <span
+                                    class="avatar-name">{{ Auth::user()->name }}</span> </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <div class="dropdown-title">Logged in 5 min ago</div>
-                            <a href="features-profile.html" class="dropdown-item has-icon">
+                            <a href="/profile/{{ Auth::user()->username }}" class="dropdown-item has-icon">
                                 <i class="far fa-user"></i> Profile
                             </a>
 
-                            <a href="features-settings.html" class="dropdown-item has-icon">
-                                <i class="fas fa-cog"></i> Settings
+                            <a href="/profile/change-password/{{ Auth::user()->username }}"
+                                class="dropdown-item has-icon">
+                                <i class="fas fa-key"></i> Ubah Password
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a href="#" class="dropdown-item has-icon text-danger">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a>
+
+                            <form action="/logout" method="post">
+                                @csrf
+                                <button type="submit" class="dropdown-item has-icon text-danger">
+                                    <i class="fas fa-sign-out-alt mt-2"></i> Logout
+                                </button>
+                            </form>
+
                         </div>
                     </li>
                 </ul>

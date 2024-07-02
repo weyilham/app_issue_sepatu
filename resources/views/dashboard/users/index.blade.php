@@ -10,8 +10,8 @@
                     <h4><i class="fas fa-users"></i> Daftar Users</h4>
                 </div>
                 <div class="card-body">
-                    <button class="btn btn-primary mb-3"> <i class="fas fa-plus"></i> Tambah Data Users</button>
-
+                    <a href="/users/create" class="btn btn-primary mb-3"> <i class="fas fa-plus"></i> Tambah Data Users</a>
+                    <div class="action-session" data-session="{{ session('success') }}"></div>
                     <table class="table table-striped table-bordered table-hover" id="myTable">
                         <thead>
                             <tr class="text-center">
@@ -49,3 +49,20 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable();
+            const success = $('.action-session').data('session');
+
+            if (success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: "Data Berhasili di Tambah!"
+                })
+            }
+        })
+    </script>
+@endpush
