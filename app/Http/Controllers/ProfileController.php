@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,11 +12,7 @@ class ProfileController extends Controller
     public function index(Request $request, $username)
     {
         $data = User::where('username', $username)->first();
-        $role = [
-            'admin' => 'Admin',
-            'laboratorium' => 'Laboratorium',
-            'quality-control' => 'Quality Control',
-        ];
+        $role = Role::all();
         // dd($data);
         return view('dashboard.profile.index', ['user' => $data, 'role' => $role]);
     }
@@ -24,7 +21,7 @@ class ProfileController extends Controller
     {
         $data = $request->validate([
             'name' => 'required',
-            'level' => 'required',
+            'role_id' => 'required',
             'image' => 'image|file|max:1024',
         ]);
 
@@ -37,9 +34,7 @@ class ProfileController extends Controller
             $data['image'] = $request->file('image')->store('profile');
         }
 
-        // if($data['level'] == null){}
 
-        // dd($data);
         User::where('id', $request->id)->update($data);
         $user = User::find($request->id);
         return response()->json(['success' => 'Data Berhasil di Update', 'user' => $user]);

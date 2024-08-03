@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Artikel;
 use App\Models\Issue;
 use App\Models\Sepatu;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class IssueController extends Controller
         //
         return view('dashboard.issue.index', [
             'sepatu' => Sepatu::all(),
+            'artikel' => Artikel::all(),
         ]);
     }
 
@@ -33,7 +35,8 @@ class IssueController extends Controller
         //
         return view('dashboard.issue.create', [
             'sepatu' => Sepatu::all(),
-            'issue' => Issue::all()
+            'issue' => Issue::all(),
+            'artikel' => Artikel::all(),
         ]);
     }
 
@@ -47,7 +50,7 @@ class IssueController extends Controller
     {
         //
         $data = $request->validate([
-            'sepatu_id' => 'required',
+            'artikel_id' => 'required',
             'gambar' => 'required|file|mimes:png,jpg,jpeg|max:2048',
             'deskripsi' => 'required',
         ], [
@@ -79,8 +82,8 @@ class IssueController extends Controller
     public function show(Issue $issue)
     {
         //
-        // dd($issue->sepatu);
-        return response()->json(['data' => $issue, 'sepatu' => $issue->sepatu]);
+        // dd($issue);
+        return response()->json(['data' => $issue, 'artikel' => $issue->artikel]);
     }
 
     /**
@@ -107,8 +110,8 @@ class IssueController extends Controller
         $id = $request->id;
 
         $data = $request->validate([
-            'sepatu_id' => 'required',
-            'gambar' => 'required|file|mimes:png,jpg,jpeg|max:2048',
+            'artikel_id' => 'required',
+            'gambar' => 'nullable|file|mimes:png,jpg,jpeg|max:2048',
             'deskripsi' => 'required',
         ], [
             'required' => ':attribute tidak boleh kosong',

@@ -30,7 +30,7 @@
                         <tr>
                             <th width="150">Role</th>
                             <td width="10">:</td>
-                            <td> <span class="badge badge-danger d-level">{{ $user->level }}</span> </td>
+                            <td> <span class="badge badge-danger d-role_id">{{ $user->role->name }}</span> </td>
                         </tr>
                     </table>
                 </div>
@@ -67,19 +67,18 @@
                     </div>
                     @can('is_admin')
                         <div class="form-group">
-                            <label for="level">Role</label>
-                            <select class="form-control" id="level" name="level">
+                            <label for="role_id">Role</label>
+                            <select class="form-control" id="role_id" name="role_id">
                                 {{-- <option selected disabled>Pilih Role</option> --}}
                                 @foreach ($role as $r)
-                                    <option value={{ strtolower(str_replace(' ', '-', $r)) }}
-                                        {{ $user->level == strtolower(str_replace(' ', '-', $r)) ? 'selected' : '' }}>
-                                        {{ $r }}</option>
+                                    <option value={{ $r->id }} {{ $user->role_id == $r->name ? 'selected' : '' }}>
+                                        {{ $r->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                     @endcan
 
-                    <input type="hidden" name="role" id="role" value="{{ $user->level }}">
+                    <input type="hidden" name="role_id" id="role_id" value="{{ $user->role->id }}">
 
                     <div class="form-group">
                         <label for="image">Gambar Profile</label>
@@ -121,12 +120,13 @@
                 e.preventDefault(); // Mencegah pengiriman form secara default
                 const id = $('#id').val();
                 // const name = $('#name').val();
-                // const level = $('#level').val();
+                // const role_id = $('#role_id').val();
                 // const image = $('#image')[0].files[0];
                 let formData = new FormData();
                 formData.append('id', id);
                 formData.append('name', $('#name').val());
-                formData.append('level', $('#level').val() == undefined ? $('#role').val() : $('#level')
+                formData.append('role_id', $('#role_id').val() == undefined ? $('#role').val() : $(
+                        '#role_id')
                     .val());
                 if ($('#image')[0].files.length > 0) {
                     formData.append('image', $('#image')[0]
@@ -156,9 +156,17 @@
 
                         console.log(response);
 
+                        if (response.user.role_id == 1) {
+                            const role = 'Admin';
+                        } else if (response.user.role_id == 2) {
+                            const role = 'Laboratorium';
+                        } else {
+                            const role = 'Quality Control';
+                        }
+
                         $('.d-name').html(response.user.name);
                         $('.avatar-name').html(response.user.name);
-                        $('.d-level').html(response.user.level);
+                        $('.d-role_id').html(role);
                         if (response.user.image == 'default.jpg') {
                             $('.profile-img').attr('src', 'http://127.0.0.1:8000/img/' +
                                 response.user.image);

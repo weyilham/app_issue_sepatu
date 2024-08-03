@@ -112,6 +112,7 @@
                             'slug': slug
                         },
                         success: function(response) {
+
                             $('#nama_merk').val("");
                             $('#slug').val("");
                             $('#addModal').modal('hide');
@@ -128,11 +129,16 @@
                                 url: "{{ url('getTableSepatu') }}",
                                 success: function(response) {
                                     $('#myTable').html(response);
-                                    console.log('halloooo')
                                 }
                             })
-
-                            console.log(response);
+                        },
+                        error: function(response) {
+                            console.log(response)
+                            Swal.fire({
+                                title: "Oops!",
+                                text: 'Nama Sepatu Sudah Ada!',
+                                icon: "error"
+                            })
                         }
                     })
 

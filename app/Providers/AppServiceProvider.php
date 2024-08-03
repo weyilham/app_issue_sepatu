@@ -27,15 +27,15 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Gate::define('is_admin', function ($user) {
-            return $user->level == 'admin';
+            return $user->role_id == 1;
         });
 
         Gate::define('is_laboratorium', function ($user) {
-            return $user->level == 'laboratorium' || $user->level == 'admin';
+            return $user->role_id == 2 || $user->role_id == 1;
         });
 
         Gate::define('is_quality-control', function ($user) {
-            return $user->level == 'quality-control' || $user->level == 'admin';
+            return $user->role_id == 3 || $user->role_id == 1;
         });
     }
 }

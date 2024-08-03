@@ -104,10 +104,11 @@
                         <div class="col-md-6">
                             <table class="table">
                                 <tr>
-                                    <th>Nama Merk</th>
+                                    <th>Nama Artikel</th>
                                     <td>:</td>
-                                    <td class="d_nama_merk">Adidas 123</td>
+                                    <td class="d_nama_artikel">Adidas 123</td>
                                 </tr>
+
                                 <tr>
                                     <th>Tanggal Issue</th>
                                     <td>:</td>
@@ -174,13 +175,20 @@
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <label for="nama_sepatu">Nama Sepatu</label>
-                        <select class="form-control" id="sepatu_id" name="sepatu_id">
-                            <option selected disabled>Pilih Sepatu</option>
-                            @foreach ($sepatu as $item)
-                                <option value={{ $item->id }}>{{ $item->nama_merk }}</option>
+                        <label for="artikel_id">Nama Artikel</label>
+                        <select class="form-control nama-artikel" name="artikel_id" id="artikel_id">
+                            <option selected disabled>Pilih Artikel</option>
+                            @foreach ($artikel as $item)
+                                <option value={{ $item->id }} data-idSepatu={{ $item->sepatu_id }}>
+                                    {{ $item->nama_artikel }}
+                                </option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nama_sepatu">Merk Sepatu</label>
+                        <input type="text" class="form-control" name="nama_sepatu" id="nama_sepatu" readonly>
                     </div>
 
                     <div class="form-group">
@@ -249,7 +257,9 @@
                 $.ajax({
                     type: "get",
                     url: "{{ url('issue') }}/" + id,
-
+                    data: {
+                        id: id
+                    },
                     success: function(response) {
                         console.log(response)
                         const status = $('.d_status')
@@ -262,7 +272,7 @@
                             status.addClass('badge-danger')
                         }
 
-                        $('.d_nama_merk').text(response.sepatu.nama_merk)
+                        $('.d_nama_artikel').text(response.artikel.nama_artikel)
                         $('.d_deskripsi').text(response.data.deskripsi)
                         $('.d_tgl_issue').text(response.data.tgl_issue)
                         $('.d_status').text(response.data.status)
@@ -279,13 +289,30 @@
             $(document).on('click', '.editData', function() {
                 $('.modal-backdrop').hide();
 
+                const nama_artikel = $('.nama-artikel');
+                const nama_sepatu = $('#nama_sepatu');
+
+                nama_artikel.on('change', function(e) {
+                    const selectedOption = $(this).find('option:selected');
+                    const id_sepatu = selectedOption.data('idsepatu');
+                    // console.log(id_sepatu)
+                    $.ajax({
+                        type: "GET",
+                        url: `{{ url('sepatu') }}/${id_sepatu}`,
+                        success: function(response) {
+                            nama_sepatu.val(response.data.nama_merk)
+                        }
+                    })
+
+                })
+
                 const id = $(this).data('id');
 
                 $.ajax({
                     type: "GET",
                     url: "{{ url('issue') }}/" + id,
                     success: function(response) {
-                        $('#sepatu_id').val(response.data.sepatu_id);
+                        $('#artikel_id').val(response.data.artikel_id);
                         $('.gambar-issue').attr('src', "{{ url('storage') }}" +
                             '/' + response
                             .data.gambar);
@@ -294,7 +321,7 @@
                         // Menghapus event handler sebelumnya agar tidak menambahkan banyak event handler setiap kali modal dibuka
                         $('.updateData').off('click').on('click', function() {
                             let formData = new FormData();
-                            formData.append('sepatu_id', $('#sepatu_id')
+                            formData.append('artikel_id', $('#artikel_id')
                                 .val());
                             formData.append('deskripsi', $('#deskripsi')
                                 .val());

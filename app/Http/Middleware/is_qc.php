@@ -16,7 +16,7 @@ class is_qc
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check() || auth()->user()->level !== "admin" && auth()->user()->level !== "quality-control") {
+        if (!auth()->check() || auth()->user()->role_id !== 1 && auth()->user()->role_id !== 3) {
             abort(403);
         }
         return $next($request);

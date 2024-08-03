@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Improve;
 use App\Models\Issue;
 use App\Models\Sepatu;
 use Illuminate\Http\Request;
@@ -13,6 +14,12 @@ class ImprovedController extends Controller
     public function index()
     {
         return view('dashboard.improve.index');
+    }
+
+    public function show($id)
+    {
+        $issue = Issue::find($id);
+        return response()->json(['data' => $issue, 'artikel' => $issue->artikel]);
     }
 
     public function getDataIssue()
@@ -37,11 +44,20 @@ class ImprovedController extends Controller
             ->make(true);
     }
 
-    public function update(Request $request, $id)
+    public function store(Request $request)
     {
-        Issue::where('id', $id)->update([
-            'status' => "Done",
+        // $data = [
+        //     'issue_id' => $request->issue_id,
+        //     'tgl_improve' => date('Y-m-d'),
+        //     'gambar' => 'default.png',
+        // ];
+        // dd('ok');
+
+        // Improve::insert($data);
+
+        Issue::where('id', $request->issue_id)->update([
+            'status' => 'Done',
         ]);
-        return response()->json(['success' => 'Data Berhasil di Hapus']);
+        return response()->json(['success' => 'Data Berhasil di Improve']);
     }
 }

@@ -41,7 +41,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Merk</th>
+                                    <th>Nama Artikel</th>
                                     <th>Tanggal Issue</th>
                                     <th>Gambar</th>
                                     <th>Deskripsi</th>
@@ -87,12 +87,12 @@
                         // $(tBody).html(response);
                         // console.log(response)
                         response.data.forEach((element, index) => {
-                            console.log(element);
+                            // console.log(element);
 
                             $('.table-laporan tbody').append(`
                             <tr>
                                 <td>${index + 1}</td>
-                                <td>${response.sepatu.find(sepatu => sepatu.id == element.sepatu_id).nama_merk || element.sepatu_id}</td>
+                                <td>${response.artikel.find(artikel => artikel.id == element.artikel_id).nama_artikel || element.artikel_id}</td>
                                 <td>${element.tgl_issue}</td>
                                 <td><img src="{{ asset('storage') }}/${element.gambar}" width="50px" height="50px"></td>
                                 <td>${element.deskripsi}</td>

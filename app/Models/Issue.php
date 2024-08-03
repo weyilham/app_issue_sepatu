@@ -11,8 +11,13 @@ class Issue extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
-    public function sepatu()
+    public function artikel()
     {
-        return $this->belongsTo(Sepatu::class);
+        return $this->belongsTo(Artikel::class);
+    }
+
+    public function issue()
+    {
+        return $this->hasOne(Issue::class);
     }
 }

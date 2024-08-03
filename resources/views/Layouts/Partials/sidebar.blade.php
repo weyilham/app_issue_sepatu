@@ -20,6 +20,7 @@
                     <ul class="dropdown-menu">
                         <li><a class="nav-link" href="/users">Users</a></li>
                         <li><a class="nav-link" href="/sepatu">Data Sepatu</a></li>
+                        <li><a class="nav-link" href="/artikel">Data Artikel</a></li>
                     </ul>
                 </li>
             @endcan

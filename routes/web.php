@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ArtikelController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ImprovedController;
 use App\Http\Controllers\IssueAjaxController;
@@ -8,6 +10,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SepatuController;
 use App\Http\Controllers\UserController;
+use App\Models\Artikel;
 use App\Models\Issue;
 use App\Models\Sepatu;
 use Illuminate\Support\Facades\Route;
@@ -45,12 +48,18 @@ Route::get('/profile/change-password/{user:username}', [ProfileController::class
 Route::put('/profile/change-password/{id}', [ProfileController::class, 'updatePassword'])->name('profile.change-password')->middleware('auth');
 
 
-Route::resource('/sepatu', SepatuController::class)->middleware('is_admin');
+Route::resource('/sepatu', SepatuController::class)->middleware('is_admin', 'is_qc');
 Route::get('/getTableSepatu', function () {
     return view('dashboard.sepatu.getTable', [
         'sepatu' => Sepatu::orderBy('id', 'desc')->get(),
     ]);
 })->middleware('auth');
+
+Route::get('/getShoes/{id}', function ($id) {
+    return response()->json(Sepatu::find($id));
+});
+
+Route::resource('/artikel', ArtikelController::class)->middleware('is_admin');
 
 Route::resource('/issue', IssueController::class)->middleware('is_qc');
 Route::get('/getIssue/{id}', function ($id) {
@@ -58,7 +67,8 @@ Route::get('/getIssue/{id}', function ($id) {
 });
 Route::resource('/ajaxIssue', IssueAjaxController::class)->middleware('is_qc');
 Route::get('/improve', [ImprovedController::class, 'index'])->middleware('is_lab');
-Route::put('/improve/{id}', [ImprovedController::class, 'update'])->middleware('is_lab');
+Route::get('/improve/{id}', [ImprovedController::class, 'show'])->middleware('is_lab');
+Route::post('/improve', [ImprovedController::class, 'store'])->middleware('is_lab');
 Route::get('/getDataIssue', [ImprovedController::class, 'getDataIssue'])->middleware('auth');
 Route::get('/getDataImprove', [ImprovedController::class, 'getDataImprove'])->middleware('auth');
 Route::get('/laporan/issue', [LaporanController::class, 'index'])->middleware('auth');
@@ -67,3 +77,7 @@ Route::get('/laporan/getIssue', [LaporanController::class, 'getDataLaporan'])->m
 Route::get('/laporan/getImprove', [LaporanController::class, 'getDataLaporanImprove'])->middleware('auth');
 Route::get('/laporan/export_issue', [LaporanController::class, 'exportIssue'])->middleware('auth');
 Route::get('/laporan/export_improve', [LaporanController::class, 'exportImprove'])->middleware('auth');
+Route::get('/dashboard/chart/issue', [ChartController::class, 'index'])->middleware('auth');
+
+// cek email
+Route::post('/check-email', [UserController::class, 'checkEmail'])->name('check.email');

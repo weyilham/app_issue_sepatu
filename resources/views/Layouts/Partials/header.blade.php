@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Dashboard Pembelian Tiket</title>
+    <title>Dashboard Pengaduan Layanan </title>
 
 
     <!-- General CSS Files -->

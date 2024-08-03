@@ -97,10 +97,11 @@
                         <div class="col-md-6">
                             <table class="table">
                                 <tr>
-                                    <th>Nama Merk</th>
+                                    <th>Nama Artikel</th>
                                     <td>:</td>
-                                    <td class="d_nama_merk">Adidas 123</td>
+                                    <td class="d_nama_artikel">Adidas 123</td>
                                 </tr>
+
                                 <tr>
                                     <th>Tanggal Issue</th>
                                     <td>:</td>
@@ -116,7 +117,7 @@
                                     <th>Status</th>
                                     <td>:</td>
                                     <td>
-                                        <span class="badge badge-danger d_status"></span>
+                                        <span class="badge d_status">Proses</span>
                                     </td>
                                 </tr>
 
@@ -173,6 +174,8 @@
         $(document).on('click', '.improveButton', function(e) {
             const id = e.target.dataset.id;
 
+
+
             Swal.fire({
                 title: "Apakah anda yakin?",
                 text: "Data Akan di Improve?",
@@ -183,11 +186,12 @@
                 confirmButtonText: "Yes, Imporve Data!"
             }).then((result) => {
                 if (result.isConfirmed) {
+
                     $.ajax({
-                        type: "PUT",
-                        url: `{{ url('improve') }}/${id}`,
+                        type: "POST",
+                        url: `{{ url('improve') }}`,
                         data: {
-                            'id': id
+                            'issue_id': id
                         },
                         success: function(response) {
                             console.log(response);
@@ -212,23 +216,30 @@
 
             const id = $(this).data('id')
 
+            console.log(id)
+
             $.ajax({
                 type: "get",
-                url: "{{ url('getIssue') }}/" + id,
-
+                url: "{{ url('improve') }}/" + id,
                 success: function(response) {
                     console.log(response)
+                    const status = $('.d_status')
 
+                    if (response.data.status == 'Proses') {
+                        status.addClass('badge-warning')
+                    } else if (response.data.status == 'Selesai') {
+                        status.addClass('badge-success')
+                    } else {
+                        status.addClass('badge-danger')
+                    }
 
-                    $('.d_nama_merk').text(response.sepatu.nama_merk)
+                    $('.d_nama_artikel').text(response.artikel.nama_artikel)
                     $('.d_deskripsi').text(response.data.deskripsi)
                     $('.d_tgl_issue').text(response.data.tgl_issue)
                     $('.d_status').text(response.data.status)
                     $('.d_gambar').attr('src', "{{ url('storage') }}" + '/' +
-                        response.data
-                        .gambar)
+                        response.data.gambar)
                     // $('#formEdit').modal('show')
-
                 }
             })
 

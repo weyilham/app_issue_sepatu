@@ -17,7 +17,7 @@ class SepatuController extends Controller
     {
         //
         return view('dashboard.sepatu.index', [
-            'sepatu' => Sepatu::orderBy('id', 'desc')->get()
+            'sepatu' => Sepatu::orderBy('id', 'desc')->get(),
         ]);
     }
 
@@ -39,18 +39,19 @@ class SepatuController extends Controller
      */
     public function store(Request $request)
     {
-        //validasi
+        // Validasi
         $validasi = Validator::make($request->all(), [
-            'nama_merk' => 'required',
-            'slug' => 'required'
+            'nama_merk' => 'required|unique:sepatus,nama_merk',
+            'slug' => 'required',
         ], [
             'required' => ':attribute tidak boleh kosong',
+            'unique' => ':attribute sudah ada'
         ]);
 
         if ($validasi->fails()) {
             return response()->json([
                 'errors' => $validasi->errors()
-            ]);
+            ], 422); // Status code 422 untuk Unprocessable Entity
         } else {
             $data = [
                 'nama_merk' => $request->nama_merk,
@@ -58,9 +59,15 @@ class SepatuController extends Controller
             ];
 
             Sepatu::create($data);
-            return response()->json(['data' => $data, 'jumlah' => count(Sepatu::all()), 'success' => 'Data Berhasil di Tambahkan']);
+
+            return response()->json([
+                'data' => $data,
+                'jumlah' => Sepatu::count(),
+                'success' => 'Data Berhasil di Tambahkan'
+            ], 201); // Status code 201 untuk Created
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -71,6 +78,8 @@ class SepatuController extends Controller
     public function show(Sepatu $sepatu)
     {
         //
+        // dd($sepatu);
+        return response()->json(['data' => $sepatu]);
     }
 
     /**

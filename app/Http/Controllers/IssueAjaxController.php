@@ -16,7 +16,7 @@ class IssueAjaxController extends Controller
     public function index()
     {
         //
-        $data = issue::where('status', 'Issue')->get();
+        $data = issue::orderBy('id', 'desc')->get();
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($data) {

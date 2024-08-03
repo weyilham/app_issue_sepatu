@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportImprove;
 use App\Exports\ExportIssue;
+use App\Models\Artikel;
 use App\Models\Issue;
 use App\Models\Sepatu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanController extends Controller
@@ -24,14 +26,29 @@ class LaporanController extends Controller
 
     public function getDataLaporan(Request $request)
     {
-        $issue = Issue::where('created_at', '>=', $request->WaktuAwal)->where('created_at', '<=', $request->WaktuAkhir)->where('status', 'Issue')->get();
-        return response()->json(['data' => $issue, 'sepatu' => Sepatu::all()]);
+        // dd($request->WaktuAwal);
+        $awal = Carbon::parse($request->WaktuAwal)->startOfDay();
+        $akhir = Carbon::parse($request->WaktuAkhir)->endOfDay();
+
+        $issue = Issue::where('created_at', '>=', $awal)
+            ->where('created_at', '<=', $akhir)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return response()->json(['data' => $issue, 'artikel' => Artikel::all()]);
     }
 
     public function getDataLaporanImprove(Request $request)
     {
-        $issue = Issue::where('created_at', '>=', $request->WaktuAwal)->where('created_at', '<=', $request->WaktuAkhir)->where('status', 'Done')->get();
-        return response()->json(['data' => $issue, 'sepatu' => Sepatu::all()]);
+        $awal = Carbon::parse($request->WaktuAwal)->startOfDay();
+        $akhir = Carbon::parse($request->WaktuAkhir)->endOfDay();
+
+        $issue = Issue::where('created_at', '>=', $awal)
+            ->where('created_at', '<=', $akhir)
+            ->where('status', 'Done')
+            ->orderBy('id', 'desc')
+            ->get();
+        return response()->json(['data' => $issue, 'artikel' => Artikel::all()]);
     }
 
     public function exportIssue(Request $request)

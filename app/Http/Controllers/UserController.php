@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,14 @@ class UserController extends Controller
         ]);
     }
 
+    public function checkEmail(Request $request)
+    {
+        $email = $request->input('email');
+        $exists = User::where('email', $email)->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -27,7 +36,9 @@ class UserController extends Controller
     public function create()
     {
         //
-        return view('dashboard.users.create');
+        return view('dashboard.users.create', [
+            'level' => Role::all()
+        ]);
     }
 
     /**
@@ -44,7 +55,7 @@ class UserController extends Controller
             'username' => 'required|min:3|max:255|unique:users',
             'email' => 'required|email:dns|unique:users',
             'password' => 'required|min:5|max:255',
-            'level' => 'required',
+            'role_id' => 'required',
 
         ]);
 
@@ -81,6 +92,11 @@ class UserController extends Controller
     public function edit(User $user)
     {
         //
+        $level = Role::all();
+        return view('dashboard.users.edit', [
+            'user' => $user,
+            'level' => $level
+        ]);
     }
 
     /**
@@ -93,6 +109,29 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         //
+        $validate = $request->validate([
+            'name' => 'nullable|max:255',
+            'username' => 'nullable|min:3|max:255',
+            'email' => 'nullable|email:dns|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:5|max:255',
+            'role_id' => 'required',
+
+        ]);
+
+
+        if ($request->password != $request->password_confirmation) {
+            return redirect('/users/create')->with('error_password', 'Password Tidak Sesuai');
+        } else {
+
+            $validate['password'] = bcrypt($validate['password']);
+            $validate['image'] = 'default.jpg';
+        }
+
+
+
+        // dd($validate);
+        $user->update($validate);
+        return redirect('/users')->with('success', 'Data Berhasil');
     }
 
     /**
@@ -104,5 +143,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+        $user->delete();
+        return response()->json(['success' => 'Data Berhasil']);
     }
 }

@@ -11,13 +11,19 @@
             <form method="post" action="{{ route('issue.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
-                    <label for="nama_sepatu">Nama Sepatu</label>
-                    <select class="form-control" name="sepatu_id">
-                        <option selected disabled>Pilih Sepatu</option>
-                        @foreach ($sepatu as $item)
-                            <option value={{ $item->id }}>{{ $item->nama_merk }}</option>
+                    <label for="nama_artikel">Nama Artikel</label>
+                    <select class="form-control nama-artikel" name="artikel_id" id="nama_artikel">
+                        <option selected disabled>Pilih Artikel</option>
+                        @foreach ($artikel as $item)
+                            <option value={{ $item->id }} data-idSepatu={{ $item->sepatu_id }}>{{ $item->nama_artikel }}
+                            </option>
                         @endforeach
                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="nama_sepatu">Merk Sepatu</label>
+                    <input type="text" class="form-control" name="nama_sepatu" id="nama_sepatu" readonly>
                 </div>
 
                 <div class="form-group">
@@ -35,3 +41,28 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            const nama_artikel = $('.nama-artikel');
+            const nama_sepatu = $('#nama_sepatu');
+
+            nama_artikel.on('change', function(e) {
+                const selectedOption = $(this).find('option:selected');
+                const id_sepatu = selectedOption.data('idsepatu');
+                // console.log(id_sepatu)
+                $.ajax({
+                    type: "GET",
+                    url: `{{ url('getShoes') }}/${id_sepatu}`,
+                    success: function(response) {
+                        console.log(response)
+                        nama_sepatu.val(response.nama_merk)
+                    }
+                })
+
+            })
+
+        })
+    </script>
+@endpush
