@@ -19,21 +19,33 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('artikel_id')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="nama_sepatu">Merk Sepatu</label>
-                    <input type="text" class="form-control" name="nama_sepatu" id="nama_sepatu" readonly>
+                    <label for="sepatu_id">Merk Sepatu</label>
+                    <input type="text" class="form-control" name="sepatu_id" id="sepatu_id" readonly>
+                    @error('sepatu_id')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <label for="gambar">Gambar</label>
                     <input type="file" class="form-control" name="gambar" id="gambar">
+                    @error('gambar')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <label for="gambar">Deskripsi</label>
-                    <textarea name="deskripsi" class="form-control" cols="50"></textarea>
+                    <textarea name="deskripsi" class="form-control" cols="50">{{ old('deskripsi') }}</textarea>
+                    @error('deskripsi')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -46,7 +58,7 @@
     <script>
         $(document).ready(function() {
             const nama_artikel = $('.nama-artikel');
-            const nama_sepatu = $('#nama_sepatu');
+            const nama_sepatu = $('#sepatu_id');
 
             nama_artikel.on('change', function(e) {
                 const selectedOption = $(this).find('option:selected');

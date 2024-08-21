@@ -66,4 +66,23 @@ class LaporanController extends Controller
         $akhir = $request->akhir;
         return Excel::download(new ExportImprove($awal, $akhir), 'data_improve.xlsx');
     }
+
+    public function downloadPdf(Request $request){
+        $awal = Carbon::parse($request->WaktuAwal)->startOfDay();
+        $akhir = Carbon::parse($request->WaktuAkhir)->endOfDay();
+
+        $issues = Issue::where('created_at', '>=', $awal)
+            ->where('created_at', '<=', $akhir)
+            ->orderBy('id', 'desc')
+            ->get();
+
+
+            // dd($issues);
+        return view('dashboard.laporan.issue-pdf', compact('issues'));
+
+        // $mpdf = new \Mpdf\Mpdf();
+        // $mpdf->WriteHTML($issue->load('artikel')->toJson());
+        // $mpdf->Output();
+        // dd($awal, $akhir);
+    }
 }

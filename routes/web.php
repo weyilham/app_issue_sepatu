@@ -10,7 +10,6 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SepatuController;
 use App\Http\Controllers\UserController;
-use App\Models\Artikel;
 use App\Models\Issue;
 use App\Models\Sepatu;
 use Illuminate\Support\Facades\Route;
@@ -68,6 +67,7 @@ Route::get('/getIssue/{id}', function ($id) {
 Route::resource('/ajaxIssue', IssueAjaxController::class)->middleware('is_qc');
 Route::get('/improve', [ImprovedController::class, 'index'])->middleware('is_lab');
 Route::get('/improve/{id}', [ImprovedController::class, 'show'])->middleware('is_lab');
+Route::put('/improve/{id}', [ImprovedController::class, 'update'])->middleware('is_lab');
 Route::post('/improve', [ImprovedController::class, 'store'])->middleware('is_lab');
 Route::get('/getDataIssue', [ImprovedController::class, 'getDataIssue'])->middleware('auth');
 Route::get('/getDataImprove', [ImprovedController::class, 'getDataImprove'])->middleware('auth');
@@ -78,6 +78,7 @@ Route::get('/laporan/getImprove', [LaporanController::class, 'getDataLaporanImpr
 Route::get('/laporan/export_issue', [LaporanController::class, 'exportIssue'])->middleware('auth');
 Route::get('/laporan/export_improve', [LaporanController::class, 'exportImprove'])->middleware('auth');
 Route::get('/dashboard/chart/issue', [ChartController::class, 'index'])->middleware('auth');
+Route::get('/dashboard/downloadPdf', [LaporanController::class, 'downloadPdf'])->middleware('auth');
 
 // cek email
 Route::post('/check-email', [UserController::class, 'checkEmail'])->name('check.email');

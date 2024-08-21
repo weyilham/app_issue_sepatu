@@ -245,6 +245,63 @@
 
         })
 
+        function updateStatus(id, status) {
+            $.ajax({
+                type: "PUT",
+                url: "{{ url('improve') }}/" + id,
+                data: {
+                    'status': status,
+                },
+                success: function(response) {
+                    console.log(response)
+                    $('#myTable').DataTable().ajax.reload();
+                    Swal.fire({
+                        title: "Success!",
+                        text: response.success,
+                        timer: 1500,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        icon: "success"
+
+
+                    });
+                }
+            })
+        }
+
+
+        $(document).on('click', '#diterima', function(e) {
+            e.preventDefault();
+
+            const id = $(this).data('id')
+            // console.log(id)
+            updateStatus(id, 'Diterima')
+        })
+
+        $(document).on('click', '#diproses', function(e) {
+            e.preventDefault();
+
+            const id = $(this).data('id')
+            // console.log(id)
+            updateStatus(id, 'Diproses')
+        })
+
+        $(document).on('click', '#diperbaiki', function(e) {
+            e.preventDefault();
+
+            const id = $(this).data('id')
+            // console.log(id)
+            updateStatus(id, 'Diperbaiki')
+        })
+
+        $(document).on('click', '#selesai', function(e) {
+            e.preventDefault();
+
+            const id = $(this).data('id')
+            // console.log(id)
+            updateStatus(id, 'Selesai')
+        })
+
 
 
         $('#myTable').DataTable({

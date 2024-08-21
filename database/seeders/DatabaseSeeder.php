@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         ];
         Role::insert($role);
         User::create([
-            'name' => 'Isti Musaropah',
+            'name' => 'Siti Musaropah',
             'username' => 'siti',
             'email' => 'siti@gmail.com',
             'password' => bcrypt('siti'),

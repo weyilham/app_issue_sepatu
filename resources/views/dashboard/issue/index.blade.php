@@ -300,6 +300,7 @@
                         type: "GET",
                         url: `{{ url('sepatu') }}/${id_sepatu}`,
                         success: function(response) {
+                            // console.log(response)
                             nama_sepatu.val(response.data.nama_merk)
                         }
                     })
@@ -312,10 +313,12 @@
                     type: "GET",
                     url: "{{ url('issue') }}/" + id,
                     success: function(response) {
+                        // console.log(response);
                         $('#artikel_id').val(response.data.artikel_id);
                         $('.gambar-issue').attr('src', "{{ url('storage') }}" +
                             '/' + response
                             .data.gambar);
+                        $('#nama_sepatu').val(response.sepatu.nama_merk);
                         $('#deskripsi').val(response.data.deskripsi);
 
                         // Menghapus event handler sebelumnya agar tidak menambahkan banyak event handler setiap kali modal dibuka

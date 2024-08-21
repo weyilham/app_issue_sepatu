@@ -29,6 +29,9 @@
                                 <button type="button" class="btn btn-sm btn-success tombolExport d-none" data-awal=""
                                     data-akhir=""> <i class="fas fa-file"></i>
                                     Export Excel</button>
+                                <button type="button" class="btn btn-sm btn-warning tombolExportPDF d-none" data-awal=""
+                                    data-akhir=""> <i class="fas fa-print"></i>
+                                    Export PDF</button>
                             </div>
 
                         </div>
@@ -103,6 +106,10 @@
                             $('.tombolExport').removeClass('d-none');
                             $('.tombolExport').attr('data-awal', WaktuAwal);
                             $('.tombolExport').attr('data-akhir', WaktuAkhir);
+
+                            $('.tombolExportPDF').removeClass('d-none');
+                            $('.tombolExportPDF').attr('data-awal', WaktuAwal);
+                            $('.tombolExportPDF').attr('data-akhir', WaktuAkhir);
                         })
                     }
                 })
@@ -112,6 +119,13 @@
                 const awal = $(this).data('awal');
                 const akhir = $(this).data('akhir');
                 window.open(`{{ url('laporan/export_issue') }}?awal=${awal}&akhir=${akhir}`, '_blank');
+            })
+
+            $('.tombolExportPDF').off('click').on('click', function() {
+                const awal = $(this).data('awal');
+                const akhir = $(this).data('akhir');
+                // console.log(awal, akhir)
+                window.open(`{{ url('dashboard/downloadPdf') }}?awal=${awal}&akhir=${akhir}`, '_blank');
             })
         });
     </script>

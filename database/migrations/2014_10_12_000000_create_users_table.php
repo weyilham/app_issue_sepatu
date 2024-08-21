@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->unsignedBigInteger('role_id')->default(1); // Set default value
+            $table->unsignedBigInteger('role_id')->nullable(); // Set default value
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->string('image')->default('default.jpg');
             $table->rememberToken();

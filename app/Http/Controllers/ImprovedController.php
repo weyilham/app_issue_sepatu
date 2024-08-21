@@ -44,6 +44,14 @@ class ImprovedController extends Controller
             ->make(true);
     }
 
+    public function update(Request $request, $id){
+        // $improve = Improve::find($id);
+        $improve = Issue::find($id);
+        $improve->update($request->all());
+        return response()->json(['success' => 'Status Issue Berhasil di Update']);
+        // dd($id);
+    }
+
     public function store(Request $request)
     {
         // $data = [

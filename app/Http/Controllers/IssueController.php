@@ -51,6 +51,7 @@ class IssueController extends Controller
         //
         $data = $request->validate([
             'artikel_id' => 'required',
+            'sepatu_id' => 'required',
             'gambar' => 'required|file|mimes:png,jpg,jpeg|max:2048',
             'deskripsi' => 'required',
         ], [
@@ -60,12 +61,15 @@ class IssueController extends Controller
             'max' => ':attribute tidak boleh lebih dari :max',
         ]);
 
+        // dd($data);
 
         if ($data['gambar']) {
             $data['gambar'] = $request->file('gambar')->store('gambar-issue');
         }
 
         $data['tgl_issue'] = date('Y-m-d');
+        $data['status'] = 'Diproses';
+
 
         // dd($data);
 
@@ -82,8 +86,8 @@ class IssueController extends Controller
     public function show(Issue $issue)
     {
         //
-        // dd($issue);
-        return response()->json(['data' => $issue, 'artikel' => $issue->artikel]);
+        // dd(Sepatu);
+        return response()->json(['data' => $issue, 'artikel' => $issue->artikel, 'sepatu' => Artikel::find($issue->artikel_id)->sepatu]);
     }
 
     /**

@@ -55,18 +55,20 @@ class UserController extends Controller
             'username' => 'required|min:3|max:255|unique:users',
             'email' => 'required|email:dns|unique:users',
             'password' => 'required|min:5|max:255',
-            'role_id' => 'required',
+            'role_id' => 'required|exists:roles,id',
 
         ]);
 
+        
         if ($request->password != $request->password_confirmation) {
             return redirect('/users/create')->with('error_password', 'Password Tidak Sesuai');
         } else {
-
+            
             $validate['password'] = bcrypt($validate['password']);
             $validate['image'] = 'default.jpg';
         }
-
+        
+        // dd($validate);
         // dd($validate);
         User::create($validate);
         return redirect('/users')->with('success', 'Data Berhasil');

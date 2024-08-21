@@ -19,7 +19,9 @@ class CreateIssueTable extends Migration
             $table->string('tgl_issue');
             $table->string('gambar');
             $table->string('deskripsi');
-            $table->string('status')->default('Issue');
+            $table->string('status')->enum ('Diproses', 'Diterima', 'Diperbaiki', 'Selesai')->default('Dikirim');
+            $table->string('estimasi')->nullable();
+            $table->string('bukti')->nullable();
             $table->timestamps();
         });
     }

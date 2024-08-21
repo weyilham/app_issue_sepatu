@@ -29,7 +29,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ $user->role->name }}</td>
+                                    <td>{{ $user->role->name ?? '-' }}</td>
                                     <td class="text-center">
                                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-sm"> <i
                                                 class="fas fa-edit"></i> </a>
