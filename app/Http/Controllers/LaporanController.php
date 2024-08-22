@@ -6,9 +6,9 @@ use App\Exports\ExportImprove;
 use App\Exports\ExportIssue;
 use App\Models\Artikel;
 use App\Models\Issue;
-use App\Models\Sepatu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanController extends Controller
@@ -43,9 +43,9 @@ class LaporanController extends Controller
         $awal = Carbon::parse($request->WaktuAwal)->startOfDay();
         $akhir = Carbon::parse($request->WaktuAkhir)->endOfDay();
 
-        $issue = Issue::where('created_at', '>=', $awal)
-            ->where('created_at', '<=', $akhir)
-            ->where('status', 'Done')
+        $issue = Issue::where('updated_at', '>=', $awal)
+            ->where('updated_at', '<=', $akhir)
+            ->where('status', 'Selesai')
             ->orderBy('id', 'desc')
             ->get();
         return response()->json(['data' => $issue, 'artikel' => Artikel::all()]);
@@ -68,21 +68,59 @@ class LaporanController extends Controller
     }
 
     public function downloadPdf(Request $request){
-        $awal = Carbon::parse($request->WaktuAwal)->startOfDay();
-        $akhir = Carbon::parse($request->WaktuAkhir)->endOfDay();
+        $tgl_awal = Carbon::parse($request->awal)->startOfDay();
+        $tgl_akhir = Carbon::parse($request->akhir)->endOfDay();
 
-        $issues = Issue::where('created_at', '>=', $awal)
-            ->where('created_at', '<=', $akhir)
-            ->orderBy('id', 'desc')
+        $results = DB::table('issues')
+            ->join('artikels', 'artikels.id', '=', 'issues.artikel_id')
+            ->join('sepatus', 'sepatus.id', '=', 'artikels.sepatu_id')
+            ->select(
+                'sepatus.nama_merk',
+                'artikels.nama_artikel',
+                'issues.tgl_issue',
+                'issues.tgl_selesai',
+                'issues.estimasi',
+                'issues.catatan',
+                'issues.gambar',
+                'issues.deskripsi',
+                'issues.status'
+            )
+            ->whereBetween('issues.created_at', [$tgl_awal, $tgl_akhir])
+            ->where('issues.status', '<>' ,'Selesai')
+            ->orderBy('issues.id',  'desc')
             ->get();
 
+        return view('dashboard.laporan.issue-pdf', compact('results'));
+       
+    }
 
-            // dd($issues);
-        return view('dashboard.laporan.issue-pdf', compact('issues'));
+    public function downloadImpovePdf(Request $request){
+       
+        $tgl_awal = Carbon::parse($request->awal)->startOfDay();
+        $tgl_akhir = Carbon::parse($request->akhir)->endOfDay();
 
-        // $mpdf = new \Mpdf\Mpdf();
-        // $mpdf->WriteHTML($issue->load('artikel')->toJson());
-        // $mpdf->Output();
-        // dd($awal, $akhir);
+        $results = DB::table('issues')
+            ->join('artikels', 'artikels.id', '=', 'issues.artikel_id')
+            ->join('sepatus', 'sepatus.id', '=', 'artikels.sepatu_id')
+            ->select(
+                'sepatus.nama_merk',
+                'artikels.nama_artikel',
+                'issues.tgl_issue',
+                'issues.updated_at',
+                'issues.tgl_selesai',
+                'issues.estimasi',
+                'issues.catatan',
+                'issues.gambar',
+                'issues.deskripsi',
+                'issues.status'
+            )
+            ->whereBetween('issues.updated_at', [$tgl_awal, $tgl_akhir])
+            ->where('issues.status', 'Selesai')
+            ->orderBy('issues.id', 'desc')
+            ->get();
+
+            // dd($results);
+
+        return view('dashboard.laporan.improve-pdf', compact('results'));
     }
 }

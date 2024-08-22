@@ -85,6 +85,7 @@
                 <th>No</th>
                 <th>Nama Artikel</th>
                 <th>Tanggal Issue</th>
+                <th>Tanggal Imporve</th>
                 <th>Estimasi</th>
                 <th>Catatan</th>
                 <th>Gambar</th>
@@ -97,6 +98,7 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $issue->nama_artikel }}</td>
                     <td>{{ $issue->tgl_issue }}</td>
+                    <td>{{ $issue->tgl_selesai }}</td>
                     <td>{{ $issue->estimasi ? $issue->estimasi . ' Hari' : '-' }}</td>
                     <td>{{ $issue->catatan }}</td>
                     <td style="text-align: center">

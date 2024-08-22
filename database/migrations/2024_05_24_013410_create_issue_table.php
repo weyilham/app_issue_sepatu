@@ -17,11 +17,13 @@ class CreateIssueTable extends Migration
             $table->id();
             $table->foreignId('artikel_id')->constrained()->onDelete('cascade');
             $table->string('tgl_issue');
+            $table->string('tgl_selesai')->nullable();
             $table->string('gambar');
             $table->string('deskripsi');
             $table->string('status')->enum ('Diproses', 'Diterima', 'Diperbaiki', 'Selesai')->default('Dikirim');
             $table->string('estimasi')->nullable();
-            $table->string('bukti')->nullable();
+            $table->string('catatan')->nullable();
+            $table->boolean('is_done')->default(false);
             $table->timestamps();
         });
     }

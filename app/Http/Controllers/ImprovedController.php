@@ -45,9 +45,23 @@ class ImprovedController extends Controller
     }
 
     public function update(Request $request, $id){
-        // $improve = Improve::find($id);
+
+        
         $improve = Issue::find($id);
-        $improve->update($request->all());
+        $data = [
+            'status' => $request->status
+        ];
+
+        if($request->status == 'Selesai'){
+            $data['tgl_selesai'] = date('Y-m-d');
+        }
+
+        if($request->estimasi == null && $request->catatan == null){
+            $improve->update($data);
+        }else{
+            $improve->update($request->all());
+        }
+
         return response()->json(['success' => 'Status Issue Berhasil di Update']);
         // dd($id);
     }

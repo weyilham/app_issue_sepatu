@@ -46,6 +46,9 @@
                                     <th>No</th>
                                     <th>Nama Artikel</th>
                                     <th>Tanggal Issue</th>
+                                    <th>Tanggal Selesai</th>
+                                    <th>Estimasi Perbaikan</th>
+                                    <th>Catatan</th>
                                     <th>Gambar</th>
                                     <th>Deskripsi</th>
                                     <th>Status</th>
@@ -97,9 +100,12 @@
                                 <td>${index + 1}</td>
                                 <td>${response.artikel.find(artikel => artikel.id == element.artikel_id).nama_artikel || element.artikel_id}</td>
                                 <td>${element.tgl_issue}</td>
+                                <td>${element.tgl_selesai ? element.tgl_selesai : '-'}</td>
+                                <td>${element.estimasi ? element.estimasi + ' Hari' : '-'}</td>
+                                <td>${element.catatan ? element.catatan : '-'}</td>
                                 <td><img src="{{ asset('storage') }}/${element.gambar}" width="50px" height="50px"></td>
                                 <td>${element.deskripsi}</td>
-                                <td><p class="badge ${element.status === 'Done' ? 'badge-success' : 'badge-danger'}">${element.status}</p></td>
+                                <td><p class="badge ${element.status === 'Selesai' ? 'badge-success' : 'badge-danger'}">${element.status}</p></td>
                             </tr>
                             `)
 

@@ -33,12 +33,15 @@ class ExportImprove implements FromCollection
                 'sepatus.nama_merk',
                 'artikels.nama_artikel',
                 'issues.tgl_issue',
+                'issues.tgl_selesai',
+                'issues.estimasi',
+                'issues.catatan',
                 'issues.gambar',
                 'issues.deskripsi',
                 'issues.status'
             )
-            ->whereBetween('issues.created_at', [$tgl_awal, $tgl_akhir])
-            ->where('issues.status', 'Done')
+            ->whereBetween('issues.updated_at', [$tgl_awal, $tgl_akhir])
+            ->where('issues.status', 'Selesai')
             ->orderBy('issues.id', 'desc')
             ->get();
 

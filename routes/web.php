@@ -78,7 +78,7 @@ Route::get('/laporan/getImprove', [LaporanController::class, 'getDataLaporanImpr
 Route::get('/laporan/export_issue', [LaporanController::class, 'exportIssue'])->middleware('auth');
 Route::get('/laporan/export_improve', [LaporanController::class, 'exportImprove'])->middleware('auth');
 Route::get('/dashboard/chart/issue', [ChartController::class, 'index'])->middleware('auth');
-Route::get('/dashboard/downloadPdf', [LaporanController::class, 'downloadPdf'])->middleware('auth');
-
+Route::get('/dashboard/downloadPdf', [LaporanController::class, 'downloadPdf'])->middleware('auth');Route::get('/dashboard/downloadPdfImprove', [LaporanController::class, 'downloadPdfImprove'])->middleware('auth');
+Route::get('/dashboard/downloadImpovePdf', [LaporanController::class, 'downloadImpovePdf'])->middleware('auth');
 // cek email
 Route::post('/check-email', [UserController::class, 'checkEmail'])->name('check.email');

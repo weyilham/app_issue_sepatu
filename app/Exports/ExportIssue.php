@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Exports;
-
-use App\Models\Issue;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -33,11 +31,14 @@ class ExportIssue implements FromCollection
                 'sepatus.nama_merk',
                 'artikels.nama_artikel',
                 'issues.tgl_issue',
+                'issues.estimasi',
+                'issues.catatan',
                 'issues.gambar',
                 'issues.deskripsi',
                 'issues.status'
             )
             ->whereBetween('issues.created_at', [$tgl_awal, $tgl_akhir])
+            ->where('issues.status', '<>' ,'Selesai')
             ->orderBy('issues.id', 'desc')
             ->get();
         return $results;

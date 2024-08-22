@@ -15,10 +15,15 @@
                 <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu">
-                <a class="dropdown-item" id="diproses" data-id="{{ $data->id }}" href="#">Diproses</a>
-                <a class="dropdown-item" id="diterima" data-id="{{ $data->id }}" href="#">Diterima</a>
-                <a class="dropdown-item" id="diperbaiki" data-id="{{ $data->id }}" href="#">Diperbaiki</a>
-                <a class="dropdown-item" id="selesai" data-id="{{ $data->id }}" href="#">Selesai</a>
+                <a class="dropdown-item {{ $data->status == 'Diproses' ? 'active' : 'disabled' }}" id="diproses"
+                    data-id="{{ $data->id }}" href="#">Diproses</a>
+                <a class="dropdown-item {{ $data->status == 'Diterima' ? 'active' : '' }}" id="diterima"
+                    data-id="{{ $data->id }}" href="#" data-toggle="modal"
+                    data-target="#formImprove">Diterima</a>
+                <a class="dropdown-item {{ $data->status == 'Diperbaiki' ? 'active' : '' }}" id="diperbaiki"
+                    data-id="{{ $data->id }}" href="#">Diperbaiki</a>
+                <a class="dropdown-item {{ $data->status == 'Selesai' ? 'active' : '' }}" id="selesai"
+                    data-id="{{ $data->id }}" href="#">Selesai</a>
             </div>
         </div>
     @endif

@@ -114,6 +114,18 @@
                                 </tr>
 
                                 <tr>
+                                    <th>Estimasi</th>
+                                    <td>:</td>
+                                    <td class="d_estimasi">Estimasi</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Catatan</th>
+                                    <td>:</td>
+                                    <td class="d_catatan">Catatan</td>
+                                </tr>
+
+                                <tr>
                                     <th>Status</th>
                                     <td>:</td>
                                     <td>
@@ -154,6 +166,46 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="formImprove" tabindex="-1" aria-labelledby="formImproveLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formEditLabel">Form Improve</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="estimasi">Estimasi Perbaikan</label>
+                            <select name="estimasi" id="estimasi" class="form-control">
+                                {{-- <option value="" disabled selected>Pilih Estimasi</option> --}}
+                                <option value="1">1 Hari</option>
+                                <option value="2">2 Hari</option>
+                                <option value="3">3 Hari</option>
+                                <option value="4">4 Hari</option>
+                                <option value="5">5 Hari</option>
+                                <option value="6">6 Hari</option>
+                                <option value="7">7 Hari</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <label for="catatan">Catatan (optional)</label>
+                            <textarea name="catatan" id="catatan" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary tombolUpdate" data-dismiss="modal">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -173,9 +225,6 @@
         // imrove action
         $(document).on('click', '.improveButton', function(e) {
             const id = e.target.dataset.id;
-
-
-
             Swal.fire({
                 title: "Apakah anda yakin?",
                 text: "Data Akan di Improve?",
@@ -235,6 +284,8 @@
 
                     $('.d_nama_artikel').text(response.artikel.nama_artikel)
                     $('.d_deskripsi').text(response.data.deskripsi)
+                    $('.d_estimasi').text(response.data.estimasi)
+                    $('.d_catatan').text(response.data.catatan)
                     $('.d_tgl_issue').text(response.data.tgl_issue)
                     $('.d_status').text(response.data.status)
                     $('.d_gambar').attr('src', "{{ url('storage') }}" + '/' +
@@ -245,12 +296,14 @@
 
         })
 
-        function updateStatus(id, status) {
+        function updateStatus(id, status, estimasi = '', catatan = '') {
             $.ajax({
                 type: "PUT",
                 url: "{{ url('improve') }}/" + id,
                 data: {
                     'status': status,
+                    'estimasi': estimasi || null,
+                    'catatan': catatan || null,
                 },
                 success: function(response) {
                     console.log(response)
@@ -275,7 +328,39 @@
 
             const id = $(this).data('id')
             // console.log(id)
-            updateStatus(id, 'Diterima')
+            $('#formImprove').modal('show')
+            $('.modal-backdrop').hide();
+
+            $.ajax({
+                type: "get",
+                url: "{{ url('improve') }}/" + id,
+                success: function(response) {
+                    console.log(response.data.estimasi)
+                    if (response) {
+                        $('#estimasi').val(response.data.estimasi)
+                        $('#catatan').val(response.data.catatan)
+                    }
+                }
+            })
+
+
+            $('.tombolUpdate').on('click', function() {
+                const estimasi = $('#estimasi').val()
+                const catatan = $('#catatan').val()
+
+                if (estimasi == '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Estimasi Perbaikan Tidak Boleh Kosong!'
+                    });
+                } else {
+                    updateStatus(id, 'Diterima', estimasi, catatan)
+                }
+            })
+
+
+            // updateStatus(id, 'Diterima')
         })
 
         $(document).on('click', '#diproses', function(e) {
@@ -299,7 +384,26 @@
 
             const id = $(this).data('id')
             // console.log(id)
-            updateStatus(id, 'Selesai')
+            Swal.fire({
+                title: "Apakah Kamu Yakin?",
+                text: "Data Akan di Selesaikan!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, Selesaikan!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // updateStatus(id, 'Selesai')
+                    updateStatus(id, 'Selesai')
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Data Telah Selesaikan.",
+                        icon: "success"
+                    });
+                }
+            });
+            // updateStatus(id, 'Selesai')
         })
 
 
